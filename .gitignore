@@ -14,3 +14,6 @@ htmlcov/
 build/
 dist/
 .DS_Store
+
+# Vendor manual: copyrighted, download it yourself (see docs/vendor/SOURCES.md)
+docs/vendor/*.pdf

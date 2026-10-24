@@ -1,29 +1,31 @@
-# Pendências que só o radar real confirma
+# Checks that only real hardware can confirm
 
-Rodar na Pi Zero com o radar ligado (ver ligação no README). Instalar antes:
+Run on the Pi Zero with the radar connected (see wiring in the README). Install first:
 `pip install -e '.[dev]'`.
 
-Status em 2026-10-20 (firmware V1.13.25070114): ✅ confirmado, ⏳ pendente.
+Status as of 2026-10-20 (firmware V1.13.25070114): ✅ confirmed, ⏳ pending.
 
-| # | Status | O que confirmar | Comando |
+| # | Status | What to confirm | Command |
 | --- | --- | --- | --- |
-| 1 | ✅ | Frames de dados chegam e decodificam sem rodapé inválido | `pytest --hw --port=/dev/serial0 tests/test_hw.py::test_receives_reports` |
-| 2 | ✅ | ACK de firmware: comprimento real (`0C 00` ou `0B 00` como no manual) e tipo `0x2451` | `ld2451 -vv info 2>&1 \| grep "ACK 0x00A0"`; depois `pytest --hw tests/test_hw.py::test_firmware -s` |
-| 3 | ✅ | Ida e volta dos parâmetros de detecção | `pytest --hw tests/test_hw.py::test_params_roundtrip` |
-| 4 | ✅ | Ida e volta da sensibilidade | `pytest --hw tests/test_hw.py::test_sensitivity_roundtrip` |
-| 5 | ✅ | O radar volta a reportar depois de sair do modo de configuração | `pytest --hw tests/test_hw.py::test_reports_resume_after_session` |
-| 6 | ⏳ | Parâmetros valem sem reiniciar (o manual não diz) | `ld2451 config --max-distance 20` e, com um alvo a ~30 m, `ld2451 monitor --count 50`: não deve aparecer alvo além de 20 m |
-| 7 | ⏳ | Direção `00` = aproximando (manual p. 9) | `ld2451 monitor` andando em direção ao radar: `approaching` |
-| 8 | ⏳ | Ordem dos bytes 0/1 do relatório (quantidade, alarme) | `ld2451 monitor --json --count 20`: `alarm` deve ser `true` só com alvo se aproximando |
-| 9 | ⏳ | Troca de baud rate e volta ao padrão | `ld2451 config --set-baudrate 230400 --yes --restart`; `ld2451 info --baudrate 230400`; `ld2451 config --baudrate 230400 --set-baudrate 115200 --yes --restart` |
-| 10 | ⏳ | Reconexão: desligar e religar o radar durante `ld2451 monitor --stats` | `ld2451 -v monitor --stats`, desconectar 5 V por alguns segundos; deve logar "reconnected" (se a `/dev/serial0` não sumir, só os contadores mudam) |
-| 11 | ✅ | Gravação e reprodução de uma sessão real | `ld2451 record tests/fixtures/real_session.csv --duration 30` e `ld2451 replay tests/fixtures/real_session.csv` |
+| 1 | ✅ | Data frames arrive and decode without invalid footers | `pytest --hw --port=/dev/serial0 tests/test_hw.py::test_receives_reports` |
+| 2 | ✅ | Firmware ACK: actual length (`0C 00`, or `0B 00` as in the manual) and type `0x2451` | `ld2451 -vv info 2>&1 \| grep "ACK 0x00A0"`; then `pytest --hw tests/test_hw.py::test_firmware -s` |
+| 3 | ✅ | Detection parameters round-trip | `pytest --hw tests/test_hw.py::test_params_roundtrip` |
+| 4 | ✅ | Sensitivity round-trip | `pytest --hw tests/test_hw.py::test_sensitivity_roundtrip` |
+| 5 | ✅ | The radar resumes reporting after leaving configuration mode | `pytest --hw tests/test_hw.py::test_reports_resume_after_session` |
+| 6 | ⏳ | Parameters take effect without a restart (the manual doesn't say) | `ld2451 config --max-distance 20` and, with a target at ~30 m, `ld2451 monitor --count 50`: no target beyond 20 m should appear |
+| 7 | ⏳ | Direction `00` = approaching (manual p. 9) | `ld2451 monitor` while walking towards the radar: `approaching` |
+| 8 | ⏳ | Order of report bytes 0/1 (count, alarm) | `ld2451 monitor --json --count 20`: `alarm` should be `true` only with an approaching target |
+| 9 | ⏳ | Changing the baud rate and back to default | `ld2451 config --set-baudrate 230400 --yes --restart`; `ld2451 info --baudrate 230400`; `ld2451 config --baudrate 230400 --set-baudrate 115200 --yes --restart` |
+| 10 | ⏳ | Reconnection: power-cycle the radar during `ld2451 monitor --stats` | `ld2451 -v monitor --stats`, disconnect 5 V for a few seconds; it should log "reconnected" (if `/dev/serial0` doesn't disappear, only the counters change) |
+| 11 | ✅ | Recording and replaying a real session | `ld2451 record tests/fixtures/real_session.csv --duration 30` and `ld2451 replay tests/fixtures/real_session.csv` |
 
+Notes from the 2026-10-20 run:
 
-Notas da execução de 2026-10-20:
+- 1–5: `pytest --hw` 5/5 passed; the original parameters were restored.
+- 2: the radar sends length `0C 00` (the manual says `0B 00`).
+- 11: an idle capture is saved in `tests/fixtures/real_idle.csv`.
+- 6, 7 and 8 need a moving target in front of the radar; 9 writes the baud rate
+  persistently; 10 requires physically powering off the radar.
 
-- 1–5: `pytest --hw` 5/5 passaram; os parâmetros originais foram restaurados.
-- 2: o radar envia comprimento `0C 00` (manual diz `0B 00`).
-- 11: captura sem alvo salva em `tests/fixtures/real_idle.csv`.
-- 6, 7 e 8 precisam de um alvo em movimento na frente do radar; 9 grava
-  baud rate de forma persistente; 10 exige desligar o radar fisicamente.
+Contributions of results from other firmware versions are welcome. Please open an issue
+with the output of `ld2451 info`.

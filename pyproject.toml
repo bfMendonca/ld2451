@@ -9,8 +9,13 @@ description = "Driver for the Hi-Link HLK-LD2451 24 GHz vehicle radar over UART"
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
+authors = [{ name = "Bruno Mendonça" }]
+keywords = ["ld2451", "hlk-ld2451", "hi-link", "radar", "mmwave", "24ghz", "uart", "raspberry-pi", "driver"]
 dependencies = ["pyserial>=3.4"]
 classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -21,6 +26,12 @@ classifiers = [
     "Topic :: System :: Hardware :: Hardware Drivers",
     "Typing :: Typed",
 ]
+
+[project.urls]
+Homepage = "https://github.com/bfMendonca/ld2451"
+Issues = "https://github.com/bfMendonca/ld2451/issues"
+Changelog = "https://github.com/bfMendonca/ld2451/blob/main/CHANGELOG.md"
+Documentation = "https://github.com/bfMendonca/ld2451/blob/main/docs/protocol.md"
 
 [project.optional-dependencies]
 dev = [

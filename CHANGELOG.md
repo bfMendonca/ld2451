@@ -1,36 +1,39 @@
 # Changelog
 
-Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/);
-versionamento semântico.
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this
+project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-### Adicionado
+### Added
 
-- `LD2451(drop_oldest=False)`: a thread de leitura espera o consumidor em vez de descartar
-  relatórios. Usado por `ld2451 replay`.
+- `LD2451(drop_oldest=False)`: the reader thread waits for the consumer instead of
+  dropping reports. Used by `ld2451 replay`.
 
-### Corrigido
+### Fixed
 
-- `ld2451 replay` perdia relatórios em logs com mais de ~256 frames.
-- `LD2451.running` podia lançar `AttributeError` em corrida com `stop()`.
-- Comandos chamados de um listener travavam a thread de leitura; agora falham na hora com
-  `ConfigSessionError`. `stop()`/`close()` funcionam dentro de um listener.
-- `monitor --stats` e `replay --stats` imprimem os contadores também com Ctrl+C.
-- `config` valida os valores antes de abrir a porta e recusa `--factory-reset` junto com
-  outras alterações.
-- Backoff da reconexão continua crescendo quando a porta reabre e falha de novo.
-- `restart()` não é mais repetido (o módulo já está reiniciando).
-- `Recorder` é thread-safe; `SerialTransport.write` não chama mais `flush()` (podia bloquear).
+- `ld2451 replay` lost reports on logs with more than ~256 frames.
+- `LD2451.running` could raise `AttributeError` when racing with `stop()`.
+- Commands called from a listener deadlocked the reader thread; they now fail immediately
+  with `ConfigSessionError`. `stop()`/`close()` work from inside a listener.
+- `monitor --stats` and `replay --stats` also print the counters on Ctrl+C.
+- `config` validates values before opening the port and refuses `--factory-reset`
+  combined with other changes.
+- Reconnection backoff keeps growing when the port reopens and fails again.
+- `restart()` is no longer retried (the module is already restarting).
+- `Recorder` is thread-safe; `SerialTransport.write` no longer calls `flush()` (it could block).
 
 ## [0.1.0] - 2026-10-19
 
-### Adicionado
+### Added
 
-- `FrameDecoder` com ressincronização, limites de comprimento e buffer, e timestamp por frame.
-- Codificação/decodificação de todos os comandos do manual V1.03 e do relatório de alvos.
-- Classe `LD2451`: thread de leitura, fila e callbacks, sessão de configuração, timeout e
-  retentativa, verificação após escrita, reconexão com backoff, contadores.
-- Transportes `SerialTransport`, `ReplayTransport` e `LoopbackTransport`.
-- Gravação/reprodução de bytes brutos (`t_rx_ns,hex`).
-- CLI `ld2451 monitor | info | config | record | replay`.
+- `FrameDecoder` with resynchronisation, length and buffer limits, and per-frame timestamps.
+- Encoding/decoding of every command in the V1.03 manual and of the target report.
+- `LD2451` class: reader thread, queue and callbacks, config session, timeout and retry,
+  verify-after-write, reconnection with backoff, counters.
+- `SerialTransport`, `ReplayTransport` and `LoopbackTransport`.
+- Raw byte recording/replay (`t_rx_ns,hex`).
+- `ld2451 monitor | info | config | record | replay` CLI.
+
+[Unreleased]: https://github.com/bfMendonca/ld2451/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/bfMendonca/ld2451/releases/tag/v0.1.0
