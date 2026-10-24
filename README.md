@@ -196,6 +196,19 @@ the SHA-256 of the copy used.
 Tested on hardware with firmware `V1.13.25070114`. Checks that are still pending, such as
 those that need a moving target, are tracked in [`docs/hardware-checks.md`](docs/hardware-checks.md).
 
+## Used by
+
+<a href="https://github.com/bfMendonca/radar-cam-recorder">
+  <img src="https://raw.githubusercontent.com/bfMendonca/radar-cam-recorder/master/docs/images/speed-trap-1.jpg" alt="radar-cam-recorder prototype: camera and LD2451 radar on a 3D-printed mount" width="320" align="right">
+</a>
+
+**[radar-cam-recorder](https://github.com/bfMendonca/radar-cam-recorder)**: an unattended
+Raspberry Pi Zero "speed trap" that records camera video and LD2451 radar frames into
+time-aligned sessions, with status LEDs, a control button and a 3D-printable mount. It uses
+`ld2451` to stream and record the radar with `CLOCK_BOOTTIME` receive timestamps.
+
+<br clear="right">
+
 ## Development
 
 ```sh
