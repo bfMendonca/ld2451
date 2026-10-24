@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ld2451"
+version = "0.1.0"
+description = "Driver for the Hi-Link HLK-LD2451 24 GHz vehicle radar over UART"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+dependencies = ["pyserial>=3.4"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: System :: Hardware :: Hardware Drivers",
+    "Typing :: Typed",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7",
+    "pytest-cov>=4",
+    "hypothesis>=6",
+    "ruff>=0.5",
+    "mypy>=1.10",
+    "types-pyserial",
+]
+
+[project.scripts]
+ld2451 = "ld2451.cli:main"
+
+[tool.setuptools]
+packages = ["ld2451"]
+
+[tool.setuptools.package-data]
+ld2451 = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["hw: needs a real LD2451 radar (skipped unless --hw is given)"]
+addopts = "-ra"
+
+[tool.coverage.run]
+source = ["ld2451"]
+branch = true
+
+[tool.ruff]
+target-version = "py39"
+line-length = 100
+extend-exclude = ["*.md"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
+
+[tool.mypy]
+python_version = "3.9"
+strict = true
+files = ["ld2451", "tests"]

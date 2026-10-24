@@ -1,0 +1,9 @@
+# Synthetic session built from the hex examples in the LD2451 manual V1.03 (p. 9).
+# Not a hardware capture: chunks are split and garbage is inserted to exercise resync.
+t_rx_ns,hex
+1000000000,f4f3f2f10000f8f7f6f5
+1100000000,f4f3f2f111000301
+1100500000,8a28003c158a1e013c0f765f003c0ff8f7f6f5
+1200000000,00ff13f4f3f2f1070001018a1400
+1200400000,3206f8f7f6f5
+1300000000,f4f3f2f10000f8f7f6f5
